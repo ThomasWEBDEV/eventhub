@@ -24,15 +24,33 @@
           <p><strong>📅 Date :</strong> <%= @event.start_date&.strftime("%d/%m/%Y à %H:%M") %></p>
           <p><strong>📍 Lieu :</strong> <%= @event.location %></p>
           <p><strong>👥 Places :</strong> <%= @event.max_participants %> maximum</p>
+          <p><strong>📊 Participants inscrits :</strong> <%= @event.participations.count %></p>
         </div>
       </div>
+
+      <!-- Bouton supprimer pour tous les utilisateurs connectés -->
+      <% if user_signed_in? %>
+        <div class="card p-3 mb-4">
+          <%= button_to "🗑️ Supprimer cet événement", @event,
+                        method: :delete,
+                        class: "btn btn-danger w-100",
+                        data: {
+                          turbo_method: :delete,
+                          turbo_confirm: "Êtes-vous sûr de vouloir supprimer cet événement ?"
+                        } %>
+        </div>
+      <% end %>
     </div>
 
     <div class="col-md-4">
-      <!-- Actions -->
+      <!-- Actions de participation -->
       <div class="card p-4">
         <% if user_signed_in? %>
-          <% if current_user.participations.find_by(event: @event) %>
+          <% if current_user == @event.user %>
+            <div class="flash flash-info mb-3">
+              <span><strong>Votre événement</strong> 👑 Vous organisez cet événement</span>
+            </div>
+          <% elsif current_user.participations.find_by(event: @event) %>
             <div class="flash flash-success mb-3">
               <span><strong>Inscrit !</strong> 🎉 Vous participez à cet événement</span>
             </div>
@@ -57,6 +75,25 @@
           <%= link_to "Se connecter", new_user_session_path, class: "btn btn-flat w-100" %>
         <% end %>
       </div>
+
+      <!-- Liste des participants (visible uniquement par l'organisateur) -->
+      <% if user_signed_in? && current_user == @event.user && @event.participations.any? %>
+        <div class="card p-4 mt-3">
+          <h5>Participants (<%= @event.participations.count %>)</h5>
+          <ul class="list-unstyled">
+            <% @event.participations.each do |participation| %>
+              <li class="mb-2">
+                <div class="d-flex align-items-center">
+                  <div class="avatar me-2" style="background: #28a745; color: white; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                    <%= participation.user.email.first.upcase %>
+                  </div>
+                  <small><%= participation.user.email %></small>
+                </div>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
     </div>
   </div>
 

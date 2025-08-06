@@ -32,9 +32,24 @@
             <small class="text-muted">
               📅 <%= event.start_date&.strftime("%d/%m à %H:%M") %>
               📍 <%= event.location %>
+              👥 <%= event.participations.count %>/<%= event.max_participants %>
             </small>
-            <div class="avatar" style="background: #007bff; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
-              <%= event.user.email.first.upcase %>
+            <div class="d-flex align-items-center gap-2">
+              <!-- Bouton supprimer pour tous les utilisateurs connectés -->
+              <% if user_signed_in? %>
+                <%= button_to "🗑️", event,
+                              method: :delete,
+                              class: "btn btn-sm btn-outline-danger",
+                              title: "Supprimer",
+                              data: {
+                                turbo_method: :delete,
+                                turbo_confirm: "Supprimer cet événement ?"
+                              } %>
+              <% end %>
+              <!-- Avatar organisateur -->
+              <div class="avatar" style="background: #007bff; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                <%= event.user.email.first.upcase %>
+              </div>
             </div>
           </div>
         </div>
