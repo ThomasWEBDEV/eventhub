@@ -1,15 +1,32 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Eventhub</title>
+    <title>EventHub</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
   </head>
 
   <body>
+    <nav>
+      <%= link_to "EventHub", root_path %>
+
+      <% if user_signed_in? %>
+        Bonjour <%= current_user.email %>
+        <%= link_to "Nouvel événement", new_event_path %>
+        <%= button_to "Déconnexion", destroy_user_session_path, method: :delete %>
+      <% else %>
+        <%= link_to "Connexion", new_user_session_path %>
+        <%= link_to "Inscription", new_user_registration_path %>
+      <% end %>
+    </nav>
+
+    <% if notice %>
+      <div><%= notice %></div>
+    <% end %>
+
     <%= yield %>
   </body>
 </html>

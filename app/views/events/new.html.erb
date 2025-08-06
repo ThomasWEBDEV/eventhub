@@ -1,2 +1,32 @@
-<h1>Events#new</h1>
-<p>Find me in app/views/events/new.html.erb</p>
+<h1>Nouvel événement</h1>
+
+<%= form_with model: @event do |form| %>
+  <div>
+    <%= form.label :title %>
+    <%= form.text_field :title %>
+  </div>
+
+  <div>
+    <%= form.label :description %>
+    <%= form.text_area :description %>
+  </div>
+
+  <div>
+    <%= form.label :start_date %>
+    <%= form.datetime_local_field :start_date %>
+  </div>
+
+  <div>
+    <%= form.label :location %>
+    <%= form.text_field :location %>
+  </div>
+
+  <div>
+    <%= form.label :max_participants %>
+    <%= form.number_field :max_participants %>
+  </div>
+
+  <%= form.submit %>
+<% end %>
+
+<%= link_to "Retour", events_path %>
