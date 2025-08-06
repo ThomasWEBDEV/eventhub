@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
   devise_for :users
   root "events#index"
-  get "up" => "rails/health#show", as: :rails_health_check
+
+  resources :events do
+    resources :participations, only: [:create, :destroy]
+  end
 end
