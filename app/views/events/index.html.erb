@@ -1,29 +1,44 @@
-<h1>Événements</h1>
+<!-- app/views/events/index.html.erb -->
+<% if @events.empty? %>
+  <!-- Banner quand pas d'événements -->
+  <div class="banner" style="background-image: linear-gradient(rgba(232, 25, 25, 0.4),rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3');">
+    <div class="container">
+      <h1>Bienvenue sur EventHub</h1>
+      <p>Découvrez et créez des événements extraordinaires près de chez vous !</p>
+      <% if user_signed_in? %>
+        <%= link_to "Créer le premier événement", new_event_path, class: "btn btn-flat" %>
+      <% else %>
+        <%= link_to "Rejoignez-nous", new_user_registration_path, class: "btn btn-flat" %>
+      <% end %>
+    </div>
+  </div>
+<% else %>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Événements</h1>
+    <% if user_signed_in? %>
+      <%= link_to "Nouvel événement", new_event_path, class: "btn btn-gradient" %>
+    <% end %>
+  </div>
 
-<% @events.each do |event| %>
-  <div>
-    <h3><%= link_to event.title, event %></h3>
-    <p><%= event.description %></p>
-    <p>Le <%= event.start_date %> à <%= event.location %></p>
-    <p>Par <%= event.user.email %></p>
+  <!-- Cards grid pour les événements -->
+  <div class="cards">
+    <% @events.each do |event| %>
+      <div class="card-product">
+        <div class="card-product-image" style="background-image: url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3'); background-size: cover; background-position: center; width: 150px; height: 100px;"></div>
+        <div class="card-product-infos">
+          <h2><%= link_to event.title, event, style: "text-decoration: none;" %></h2>
+          <p><%= truncate(event.description, length: 100) %></p>
+          <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">
+              📅 <%= event.start_date&.strftime("%d/%m à %H:%M") %>
+              📍 <%= event.location %>
+            </small>
+            <div class="avatar" style="background: #007bff; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+              <%= event.user.email.first.upcase %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
   </div>
 <% end %>
-
-<!-- app/views/events/show.html.erb -->
-<h1><%= @event.title %></h1>
-<p><%= @event.description %></p>
-<p>Date : <%= @event.start_date %></p>
-<p>Lieu : <%= @event.location %></p>
-<p>Places max : <%= @event.max_participants %></p>
-<p>Organisateur : <%= @event.user.email %></p>
-
-<% if user_signed_in? %>
-  <% if current_user.participations.find_by(event: @event) %>
-    <p>Vous participez !</p>
-    <%= button_to "Annuler", [@event, current_user.participations.find_by(event: @event)], method: :delete %>
-  <% else %>
-    <%= button_to "Participer", [@event, :participations], method: :post %>
-  <% end %>
-<% end %>
-
-<%= link_to "Retour", events_path %>

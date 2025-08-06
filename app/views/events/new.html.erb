@@ -1,32 +1,46 @@
-<h1>Nouvel événement</h1>
+<!-- app/views/events/new.html.erb -->
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <h1>Créer un événement</h1>
 
-<%= form_with model: @event do |form| %>
-  <div>
-    <%= form.label :title %>
-    <%= form.text_field :title %>
+    <div class="card p-4">
+      <%= form_with model: @event, local: true do |form| %>
+        <% if @event.errors.any? %>
+          <div class="flash flash-danger alert alert-dismissible fade show mb-3">
+            <span><strong>Erreurs !</strong> Corrigez les champs ci-dessous</span>
+          </div>
+        <% end %>
+
+        <div class="mb-3">
+          <%= form.label :title, class: "form-label" %>
+          <%= form.text_field :title, class: "form-control" %>
+        </div>
+
+        <div class="mb-3">
+          <%= form.label :description, class: "form-label" %>
+          <%= form.text_area :description, rows: 4, class: "form-control" %>
+        </div>
+
+        <div class="mb-3">
+          <%= form.label :start_date, "Date et heure", class: "form-label" %>
+          <%= form.datetime_local_field :start_date, class: "form-control" %>
+        </div>
+
+        <div class="mb-3">
+          <%= form.label :location, "Lieu", class: "form-label" %>
+          <%= form.text_field :location, class: "form-control" %>
+        </div>
+
+        <div class="mb-3">
+          <%= form.label :max_participants, "Nombre maximum de participants", class: "form-label" %>
+          <%= form.number_field :max_participants, class: "form-control", min: 1 %>
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <%= link_to "Annuler", events_path, class: "btn btn-ghost" %>
+          <%= form.submit "Créer l'événement", class: "btn btn-gradient" %>
+        </div>
+      <% end %>
+    </div>
   </div>
-
-  <div>
-    <%= form.label :description %>
-    <%= form.text_area :description %>
-  </div>
-
-  <div>
-    <%= form.label :start_date %>
-    <%= form.datetime_local_field :start_date %>
-  </div>
-
-  <div>
-    <%= form.label :location %>
-    <%= form.text_field :location %>
-  </div>
-
-  <div>
-    <%= form.label :max_participants %>
-    <%= form.number_field :max_participants %>
-  </div>
-
-  <%= form.submit %>
-<% end %>
-
-<%= link_to "Retour", events_path %>
+</div>

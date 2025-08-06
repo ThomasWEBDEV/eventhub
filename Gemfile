@@ -29,6 +29,10 @@ gem "jbuilder"
 # Devise for authentication
 gem "devise"
 
+# gem boostrap for styling
+gem 'bootstrap', '~> 5.1'
+gem 'dartsass-rails'
+
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
 

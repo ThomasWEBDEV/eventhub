@@ -1,2 +1,66 @@
-<h1>Events#show</h1>
-<p>Find me in app/views/events/show.html.erb</p>
+<!-- app/views/events/show.html.erb -->
+<div class="container">
+  <div class="row">
+    <div class="col-md-8">
+      <!-- Détails de l'événement -->
+      <div class="card-product mb-4">
+        <div class="card-product-image" style="background-image: url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3'); background-size: cover; background-position: center; width: 200px; height: 150px;"></div>
+        <div class="card-product-infos">
+          <h1><%= @event.title %></h1>
+          <p><%= @event.description %></p>
+          <div class="d-flex align-items-center">
+            <div class="avatar me-2" style="background: #007bff; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+              <%= @event.user.email.first.upcase %>
+            </div>
+            <span>Organisé par <%= @event.user.email %></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informations pratiques -->
+      <div class="notification mb-4">
+        <div class="notification-content">
+          <h5>Informations pratiques</h5>
+          <p><strong>📅 Date :</strong> <%= @event.start_date&.strftime("%d/%m/%Y à %H:%M") %></p>
+          <p><strong>📍 Lieu :</strong> <%= @event.location %></p>
+          <p><strong>👥 Places :</strong> <%= @event.max_participants %> maximum</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <!-- Actions -->
+      <div class="card p-4">
+        <% if user_signed_in? %>
+          <% if current_user.participations.find_by(event: @event) %>
+            <div class="flash flash-success mb-3">
+              <span><strong>Inscrit !</strong> 🎉 Vous participez à cet événement</span>
+            </div>
+            <%= button_to "Annuler ma participation",
+            [@event, current_user.participations.find_by(event: @event)],
+            method: :delete,
+            class: "btn btn-ghost w-100",
+            data: {
+              turbo_method: :delete,
+              turbo_confirm: "Êtes-vous sûr ?"
+            } %>
+          <% else %>
+            <%= button_to "Participer à l'événement",
+                          [@event, :participations],
+                          method: :post,
+                          class: "btn btn-gradient w-100" %>
+          <% end %>
+        <% else %>
+          <div class="flash flash-warning mb-3">
+            <span><strong>Connexion requise</strong> 🔐 Connectez-vous pour participer</span>
+          </div>
+          <%= link_to "Se connecter", new_user_session_path, class: "btn btn-flat w-100" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <%= link_to "← Retour aux événements", events_path, class: "btn btn-ghost" %>
+  </div>
+</div>
